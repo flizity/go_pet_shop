@@ -17,7 +17,7 @@
 
 ### 🛠️ **Storage-слой**
 - ✅ Полностью реализован `ProductRepository`:
-  - `CreateProduct()` 
+  - `CreateProduct()`  
   - `GetProductByID()`
   - `GetAllProducts()`
   - `UpdateProduct()`

@@ -1,4 +1,4 @@
-package models
+package storage
 
 import "go-pet-shop/models"
 
@@ -7,6 +7,7 @@ type Storage interface {
 	CreateUser(user models.User) error
 	GetUserByEmail(email string) (models.User, error)
 	GetAllUsers() ([]models.User, error)
+	DeleteUser(id string) error
 
 	// Товары
 	CreateProduct(product models.Product) error
@@ -29,4 +30,17 @@ type Storage interface {
 
 	// Аналитика
 	GetPopularProducts() ([]models.PopularProduct, error)
+}
+
+type ProductRepository interface {
+	CreateProduct(product models.Product) error
+	GetProductByID(id int) (models.Product, error)
+	GetAllProducts() ([]models.Product, error)
+	UpdateProduct(product models.Product) error
+	DeleteProduct(id int) error
+}
+
+type OrderRepository interface {
+	CreateOrder(order models.Order) (int, error)
+	AddOrderItem(orderItem models.OrderItem) error
 }

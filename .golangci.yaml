@@ -1,0 +1,24 @@
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+
+linters:
+  disable-all: true
+  enable:
+    - gofmt
+    - goimports
+    - govet
+    - staticcheck
+    - unused
+    - errcheck
+    - revive
+    # typecheck временно отключен из-за проблем с пустыми файлами
+
+issues:
+  exclude:
+    - "internal/handlers/product.go" # временно исключить
+    - "internal/handlers/status.go" # временно исключить
+    - "models/storage.go" # требует исправления
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0

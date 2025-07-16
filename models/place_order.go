@@ -1,6 +1,6 @@
 package models
 
 type PlaceOrder struct {
-	ProductID int `json:"product_id" db:"product_id"`
-	Quantity  int `json:"quantity" db:"quantity"`
+	UserEmail string      `json:"user_email" binding:"required,email"`
+	Items     []OrderItem `json:"items" binding:"required,gt=0"`
 }

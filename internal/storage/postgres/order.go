@@ -10,6 +10,10 @@ type OrderRepository struct {
 	db *sqlx.DB
 }
 
+func (r *OrderRepository) PlaceOrder(param any, param2 any) (any, any) {
+	panic("unimplemented")
+}
+
 func NewOrderRepository(db *sqlx.DB) *OrderRepository {
 	return &OrderRepository{db: db}
 }

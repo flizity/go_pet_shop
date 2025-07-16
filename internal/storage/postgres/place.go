@@ -5,8 +5,8 @@ import (
 	"go-pet-shop/models"
 )
 
-func (s *Storage) PlaceOrder(userEmail string, items []models.OrderItem) (int, error) {
-	tx, err := s.db.Beginx()
+func (s *PostgresStorage) PlaceOrder(userEmail string, items []models.OrderItem) (int, error) {
+	tx, err := s.DB.Beginx()
 	if err != nil {
 		return 0, fmt.Errorf("failed to begin transaction: %w", err)
 	}

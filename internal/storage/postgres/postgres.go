@@ -5,14 +5,19 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type Storage struct {
-	db *sqlx.DB
+type PostgresStorage struct {
+	DB *sqlx.DB
 }
 
-func New(databaseURL string) (*Storage, error) {
+func NewPostgresConnection(databaseURL string) (*sqlx.DB, error) {
 	db, err := sqlx.Open("postgres", databaseURL)
 	if err != nil {
 		return nil, err
 	}
-	return &Storage{db: db}, nil
+
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }

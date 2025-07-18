@@ -15,7 +15,7 @@
 - ✅ Подключение к БД через `sqlx` 
 - ✅ Базовые модели данных (structs)
 
-### 🛠️ **Storage-слой**
+### 🛠️ **Storage-слой** 
 - ✅ Полностью реализован `ProductRepository`:
   - `CreateProduct()`  
   - `GetProductByID()`

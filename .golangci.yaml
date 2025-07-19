@@ -12,13 +12,12 @@ linters:
     - unused
     - errcheck
     - revive
-    # typecheck временно отключен из-за проблем с пустыми файлами
 
 issues:
   exclude:
-    - "internal/handlers/product.go" # временно исключить
-    - "internal/handlers/status.go" # временно исключить
-    - "models/storage.go" # требует исправления
+    - "internal/handlers/product.go"
+    - "internal/handlers/status.go"
+    - "models/storage.go"
   exclude-use-default: false
   max-issues-per-linter: 0
   max-same-issues: 0

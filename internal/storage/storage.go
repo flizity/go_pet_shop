@@ -4,13 +4,13 @@ import "go-pet-shop/models"
 
 type Storage interface {
 	// Пользователи
-	CreateUser(user models.User) error
+	CreateUser(user models.User) (int, error)
 	GetUserByEmail(email string) (models.User, error)
 	GetAllUsers() ([]models.User, error)
 	DeleteUser(id string) error
 
 	// Товары
-	CreateProduct(product models.Product) error
+	CreateProduct(product models.Product) (int, error)
 	GetProductByID(id int) (models.Product, error)
 	GetAllProducts() ([]models.Product, error)
 	UpdateProduct(product models.Product) error
@@ -30,10 +30,11 @@ type Storage interface {
 
 	// Аналитика
 	GetPopularProducts() ([]models.PopularProduct, error)
+	ProcessPayment(orderID int, amount float64, method string) error
 }
 
 type ProductRepository interface {
-	CreateProduct(product models.Product) error
+	CreateProduct(product models.Product) (int, error)
 	GetProductByID(id int) (models.Product, error)
 	GetAllProducts() ([]models.Product, error)
 	UpdateProduct(product models.Product) error

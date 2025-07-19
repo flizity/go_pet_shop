@@ -14,12 +14,13 @@ func NewProductRepository(db *sqlx.DB) *ProductRepository {
 	return &ProductRepository{db: db}
 }
 
-func (r *ProductRepository) CreateProduct(p models.Product) error {
-	_, err := r.db.Exec(
-		`INSERT INTO products (name, price, stock) VALUES ($1, $2, $3)`,
+func (r *ProductRepository) CreateProduct(p models.Product) (int, error) {
+	var id int
+	err := r.db.QueryRow(
+		`INSERT INTO products (name, price, stock) VALUES ($1, $2, $3) RETURNING id`,
 		p.Name, p.Price, p.Stock,
-	)
-	return err
+	).Scan(&id)
+	return id, err
 }
 
 func (r *ProductRepository) GetProductByID(id int) (models.Product, error) {
@@ -45,4 +46,10 @@ func (r *ProductRepository) UpdateProduct(p models.Product) error {
 func (r *ProductRepository) DeleteProduct(id int) error {
 	_, err := r.db.Exec("DELETE FROM products WHERE id = $1", id)
 	return err
+}
+
+func (r *ProductRepository) GetPopularProducts() ([]models.PopularProduct, error) {
+	var products []models.PopularProduct
+	err := r.db.Select(&products, "SELECT product_id, COUNT(*) as popularity FROM order_items GROUP BY product_id ORDER BY popularity DESC")
+	return products, err
 }

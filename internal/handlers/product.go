@@ -35,10 +35,14 @@ func (h *ProductHandler) CreateProduct(c *gin.Context) {
 		return
 	}
 
-	if err := h.repo.CreateProduct(product); err != nil {
+	id, err := h.repo.CreateProduct(product)
+	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Product created successfully"})
+	c.JSON(http.StatusCreated, gin.H{
+		"message":    "Product created successfully",
+		"product_id": id,
+	})
 }

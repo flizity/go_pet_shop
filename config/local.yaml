@@ -1,2 +1,4 @@
 db:
   url: "postgres://postgres@localhost:5433/petshop?sslmode=disable"
+server:
+  port: 8080

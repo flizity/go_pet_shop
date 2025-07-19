@@ -22,7 +22,7 @@
   - `GetAllProducts()`
   - `UpdateProduct()`
   - `DeleteProduct()`
-- ✅ Транзакционный метод `PlaceOrder()`:
+- ✅ Транзакционный метод `PlaceOrder()`: 
   - Создание заказа
   - Проверка остатков
   - Обновление склада

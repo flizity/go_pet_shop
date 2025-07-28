@@ -6,7 +6,7 @@
   - `products` (товары)
   - `users` (пользователи)
   - `orders` (заказы) 
-  - `order_items` (позиции заказов)
+  - `order_items` (позиции заказов) 
   - `transactions` (платежи)
 - ✅ Настроены миграции через `golang-migrate`
  

@@ -1,23 +1,28 @@
 package postgres
 
 import (
-	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
+	"context"
+	"fmt"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type PostgresStorage struct {
-	DB *sqlx.DB
+type Storage struct {
+	db *pgxpool.Pool
 }
 
-func NewPostgresConnection(databaseURL string) (*sqlx.DB, error) {
-	db, err := sqlx.Open("postgres", databaseURL)
+func New(databaseUrl string) (*Storage, error) {
+	const fn = "storage.postgres.New"
+
+	db, err := pgxpool.New(context.Background(), databaseUrl)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%s: %w", fn, err)
 	}
 
-	if err := db.Ping(); err != nil {
-		return nil, err
-	}
+	return &Storage{db: db}, nil
+}
 
-	return db, nil
+func (s *Storage) Close() error {
+	s.db.Close()
+	return nil
 }

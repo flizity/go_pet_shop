@@ -1,27 +1,41 @@
 package config
 
 import (
-	"io/ioutil"
+	"os"
+	"time"
 
-	"gopkg.in/yaml.v2"
+	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	DB struct {
-		URL string `yaml:"url" env:"DATABASE_URL"`
-	} `yaml:"db"`
+	Env         string `yaml:"env" env-default:"local"`
+	DatabaseURL string `yaml:"database_url" env:"DATABASE_URL"`
+	HTTPServer  `yaml:"http_server"`
 }
 
-func LoadConfig(path string) (*Config, error) {
-	data, err := ioutil.ReadFile(path)
+type HTTPServer struct {
+	Address     string        `yaml:"address" env-default:"localhost:5434"`
+	Timeout     time.Duration `yaml:"timeout" env-default:"4s"`
+	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"60s"`
+}
+
+const configPath = "./config/local.yaml"
+
+func MustLoad() *Config {
+	err := godotenv.Load()
 	if err != nil {
-		return nil, err
+		panic("error loading .env file")
 	}
 
 	var cfg Config
-	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		return nil, err
+	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
+		panic("cannot read config " + err.Error())
 	}
 
-	return &cfg, nil
+	if cfg.DatabaseURL = os.Getenv("DATABASE_URL"); cfg.DatabaseURL == "" {
+		panic("error loading DATABASE_URL from environment, please set it in .env file")
+	}
+
+	return &cfg
 }

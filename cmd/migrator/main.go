@@ -1,55 +1,57 @@
 package main
 
 import (
+	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"os"
-
-	"database/sql"
+	"strings"
 
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("No .env file found, continuing with system env")
-	}
+	_ = godotenv.Load(".env")
 
-	migrationsPath := flag.String("migrations-path", "./migrations", "Path to migrations")
+	var migrationsPath, migrationsTable string
+	dbURL := os.Getenv("DATABASE_URL")
+
+	flag.StringVar(&migrationsPath, "migrations-path", "", "path to migrations")
+	flag.StringVar(&migrationsTable, "migrations-table", "schema_migrations", "name of migrations table")
 	flag.Parse()
 
-	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		log.Fatal("DATABASE_URL is not set")
+		log.Fatal("DATABASE_URL not set in environment")
+	}
+	if migrationsPath == "" {
+		log.Fatal("migrations-path is required")
 	}
 
-	db, err := sql.Open("postgres", dbURL)
+	var separator string
+	if strings.Contains(dbURL, "?") {
+		separator = "&"
+	} else {
+		separator = "?"
+	}
+	databaseURL := fmt.Sprintf("%s%sx-migrations-table=%s", dbURL, separator, migrationsTable)
+	sourceURL := "file://" + migrationsPath
+
+	m, err := migrate.New(sourceURL, databaseURL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
 
-	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	if err != nil {
+	if err := m.Up(); err != nil {
+		if errors.Is(err, migrate.ErrNoChange) {
+			fmt.Println("no migrations to apply")
+			return
+		}
 		log.Fatal(err)
 	}
 
-	m, err := migrate.NewWithDatabaseInstance(
-		"file://"+*migrationsPath,
-		"postgres", driver,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
-		log.Fatal(err)
-	}
-
-	log.Println("Migrations applied successfully.")
+	fmt.Println("migrations applied")
 }

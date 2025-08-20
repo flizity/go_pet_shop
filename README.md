@@ -16,7 +16,7 @@
 - ✅ Базовые модели данных (structs) 
 
 ### 🛠️ **Storage-слой** 
-- ✅ Полностью реализован `ProductRepository`:
+- ✅ Полностью реализован `ProductRepository`: 
   - `CreateProduct()`  
   - `GetProductByID()`
   - `GetAllProducts()`
